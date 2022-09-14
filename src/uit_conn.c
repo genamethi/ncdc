@@ -117,16 +117,8 @@ static void t_draw_row(ui_listing_t *list, GSequenceIter *iter, int row, void *d
     cc->state == CCS_IDLE      ? 'I' : cc->dl ? 'D' : 'U');
   mvaddch(row, 3, cc->tls ? 't' : ' ');
 
-  if(cc->nick)
-    mvaddnstr(row, 5, cc->nick, str_offset_from_columns(cc->nick, 15));
-  else {
-    char tmp[30];
-    strcpy(tmp, "IP:");
-    strcat(tmp, cc->remoteaddr);
-    if(strchr(tmp+3, ':'))
-      *(strchr(tmp+3, ':')) = 0;
-    mvaddstr(row, 5, tmp);
-  }
+  char *tmp = cc->nick ? cc->nick : cc->remoteaddr;
+  mvaddnstr(row, 5, tmp, str_offset_from_columns(tmp, 15));
 
   if(cc->hub)
     mvaddnstr(row, 21, cc->hub->tab->name, str_offset_from_columns(cc->hub->tab->name, 11));
