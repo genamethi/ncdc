@@ -1,7 +1,7 @@
 
-AC_INIT([ncdc], [1.23], [projects@yorhel.nl])
+AC_INIT([ncdc],[1.23.1],[projects@yorhel.nl])
 AC_CONFIG_SRCDIR([src/ncdc.h])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 m4_include([deps/lean.m4])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 PKG_PROG_PKG_CONFIG([0.18])
@@ -135,7 +135,7 @@ AS_IF([test "x$with_geoip" = xyes],
 
 
 
-# Check whether we should use the version string from AC_INIT(), or use
+# Check whether we should use the version string from AC_INIT, or use
 # git-describe to create one. This trick is copied from the pacman source.
 
 AC_ARG_ENABLE(git-version,
@@ -164,4 +164,5 @@ fi
 AM_CONDITIONAL([INSTALL_MANPAGE], [test "x$installmanpage" = "xyes"])
 
 
-AC_OUTPUT([Makefile])
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
