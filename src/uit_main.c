@@ -34,7 +34,7 @@ ui_tab_type_t uit_main[1];
 ui_tab_t *uit_main_tab;
 
 
-ui_tab_t *uit_main_create() {
+ui_tab_t *uit_main_create(void) {
   g_return_val_if_fail(!uit_main_tab, NULL);
 
   ui_tab_t *tab = uit_main_tab = g_new0(ui_tab_t, 1);

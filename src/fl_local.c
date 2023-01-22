@@ -620,7 +620,7 @@ finish:
 }
 
 
-static void fl_hash_process() {
+static void fl_hash_process(void) {
   if(!g_hash_table_size(fl_hash_queue)) {
     ratecalc_unregister(&fl_hash_rate);
     ratecalc_reset(&fl_hash_rate);
@@ -822,7 +822,7 @@ static void fl_refresh_compare(fl_list_t *old, fl_list_t *new) {
 
 static gboolean fl_refresh_scanned(gpointer dat);
 
-static void fl_refresh_process() {
+static void fl_refresh_process(void) {
   if(!fl_refresh_queue->head)
     return;
 
@@ -987,7 +987,7 @@ static gboolean fl_init_autorefresh(gpointer dat) {
 }
 
 
-void fl_init() {
+void fl_init(void) {
   GError *err = NULL;
   gboolean dorefresh = FALSE;
 
@@ -1096,7 +1096,7 @@ static void fl_gc_id(gint64 id) {
 // Returns TRUE when it has done garbage collection, FALSE if it's not possible
 // to create a list of `active' ids because no full file refresh has been
 // performed yet.
-gboolean fl_gc() {
+gboolean fl_gc(void) {
   if(!fl_refresh_last || fl_refresh_queue->head)
     return FALSE;
 

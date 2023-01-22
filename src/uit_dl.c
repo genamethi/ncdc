@@ -92,7 +92,7 @@ static void setusers(dl_t *dl) {
 }
 
 
-ui_tab_t *uit_dl_create() {
+ui_tab_t *uit_dl_create(void) {
   g_return_val_if_fail(!dltab, NULL);
 
   dltab = g_new0(tab_t, 1);
@@ -124,7 +124,7 @@ static void t_close(ui_tab_t *tab) {
 }
 
 
-static char *t_title() {
+static char *t_title(void) {
   return g_strdup("Download queue");
 }
 

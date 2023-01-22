@@ -829,7 +829,7 @@ gint64 ratecalc_total(ratecalc_t *rc) {
 
 
 // Calculates rc->rate and rc->burst.
-void ratecalc_calc() {
+void ratecalc_calc(void) {
   GSList *n;
   // Bytes allocated to each class
   int maxburst[RCC_MAX+1] = {};
@@ -1012,7 +1012,7 @@ void logfile_add(logfile_t *l, const char *msg) {
 
 
 // Flush and re-open all opened log files.
-void logfile_global_reopen() {
+void logfile_global_reopen(void) {
   GSList *n = logfile_instances;
   for(; n; n=n->next) {
     logfile_t *l = n->data;

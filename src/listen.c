@@ -104,7 +104,7 @@ const char *listen_bind_ipport(listen_bind_t *b) {
 
 
 
-void listen_global_init() {
+void listen_global_init(void) {
   listen_hub_binds = g_hash_table_new_full(g_int64_hash, g_int64_equal, NULL, g_free);
   random_tcp_port = g_random_int_range(1025, 65535);
   random_udp_port = g_random_int_range(1025, 65535);
@@ -112,7 +112,7 @@ void listen_global_init() {
 
 
 // Closes all listen sockets and clears *listen_binds and *listen_hub_binds.
-static void listen_stop() {
+static void listen_stop(void) {
   g_debug("listen: Stopping.");
   g_hash_table_remove_all(listen_hub_binds);
   GList *n, *b = listen_binds;
@@ -326,7 +326,7 @@ static void bind_create(listen_bind_t *b) {
 
 // Should be called every time a hub is opened/closed or an active_ config
 // variable has changed.
-void listen_refresh() {
+void listen_refresh(void) {
   listen_stop();
   g_debug("listen: Refreshing");
 

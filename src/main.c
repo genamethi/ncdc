@@ -58,7 +58,7 @@ GMainLoop *main_loop;
 
 #define ctrl_to_ascii(x) ((x) == 127 ? '?' : g_ascii_tolower((x)+64))
 
-static void handle_input() {
+static void handle_input(void) {
   /* Mapping from get_wch() to input_key_t:
    *  KEY_CODE_YES -> KEY(code)
    *  KEY_CODE_NO:
@@ -192,12 +192,12 @@ static gboolean screen_update_check(gpointer dat) {
 }
 
 
-void ncdc_quit() {
+void ncdc_quit(void) {
   g_main_loop_quit(main_loop);
 }
 
 
-char *ncdc_version() {
+char *ncdc_version(void) {
   static GString *ver = NULL;
   static char *msg =
     "%s %s (built %s %s)\n"
@@ -261,7 +261,7 @@ static void log_fatal(const gchar *dom, GLogLevelFlags level, const gchar *msg, 
 }
 
 
-static void open_autoconnect() {
+static void open_autoconnect(void) {
   char **hubs = db_vars_hubs();
   char **hub;
   // TODO: make sure the tabs are opened in the same order as they were in the last run?

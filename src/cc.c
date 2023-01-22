@@ -336,7 +336,7 @@ static void nmdc_handle(net_t *net, char *msg, int _len);
 GSequence *cc_list;
 
 
-void cc_global_init() {
+void cc_global_init(void) {
   cc_expected = g_queue_new();
   cc_list = g_sequence_new(NULL);
 
@@ -347,7 +347,7 @@ void cc_global_init() {
 
 // Calls cc_disconnect() on every open cc connection. This makes sure that any
 // current transfers are aborted and logged to the transfer log.
-void cc_global_close() {
+void cc_global_close(void) {
   GSequenceIter *i = g_sequence_get_begin_iter(cc_list);
   for(; !g_sequence_iter_is_end(i); i=g_sequence_iter_next(i)) {
     cc_t *c = g_sequence_get(i);
@@ -362,7 +362,7 @@ void cc_global_close() {
 // Closes the connection otherwise.
 // I suspect that this is more efficient than checking with the cc list every
 // time someone joins/quits a hub.
-void cc_global_onlinecheck() {
+void cc_global_onlinecheck(void) {
   GSequenceIter *i = g_sequence_get_begin_iter(cc_list);
   for(; !g_sequence_iter_is_end(i); i=g_sequence_iter_next(i)) {
     cc_t *c = g_sequence_get(i);

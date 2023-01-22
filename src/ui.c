@@ -287,7 +287,7 @@ void ui_init(gboolean bracketed_paste) {
 }
 
 
-static void ui_draw_status() {
+static void ui_draw_status(void) {
   if(fl_is_refreshing())
     mvaddstr(winrows-1, 0, "[Refreshing share]");
   else if(fl_hash_queue && g_hash_table_size(fl_hash_queue))
@@ -419,7 +419,7 @@ static void ui_draw_tablist(int xoffset) {
 #undef prio2a
 
 
-void ui_draw() {
+void ui_draw(void) {
   ui_tab_t *curtab = ui_tab_cur->data;
   curtab->prio = UIP_EMPTY;
 
@@ -463,7 +463,7 @@ void ui_draw() {
 }
 
 
-gboolean ui_checkupdate() {
+gboolean ui_checkupdate(void) {
   ui_tab_t *cur = ui_tab_cur->data;
   return ui_m_updated || ui_beep || (cur->log && cur->log->updated);
 }

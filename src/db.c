@@ -424,7 +424,7 @@ static gpointer db_thread_func(gpointer dat) {
 
 // Flushes the queue, blocks until all queries are processed and then performs
 // a little cleanup.
-void db_close() {
+void db_close(void) {
   // Send a END message to the database thread
   GByteArray *a = g_byte_array_new();
   darray_init(a);
@@ -634,7 +634,7 @@ void db_fl_getids(void (*callback)(gint64)) {
 
 // Remove rows from the hashdata table that are not referenced from the
 // hashfiles table.
-void db_fl_purgedata() {
+void db_fl_purgedata(void) {
   // For small databases, sqlite is clever enough to create a temporary
   // in-memory index on hashfiles(tth). But sometimes it doesn't, and then this
   // query takes an hour or longer to run. To be on the safe side, explicitely
@@ -864,7 +864,7 @@ static GArray *db_share_cache = NULL;
 // Returns a zero-terminated array of the shared directories. The array is
 // ordered by name. The array should not be freed, and may be modified by any
 // later call to a db_share_ function.
-db_share_item_t *db_share_list() {
+db_share_item_t *db_share_list(void) {
   // Return cache
   if(db_share_cache)
     return (db_share_item_t *)db_share_cache->data;
@@ -997,7 +997,7 @@ static void db_vars_cachefree(gpointer a) {
 
 
 // Ensures db_vars_cache is initialized
-static void db_vars_cacheget() {
+static void db_vars_cacheget(void) {
   if(db_vars_cache)
     return;
 
@@ -1110,7 +1110,7 @@ guint64 db_vars_hubid(const char *name) {
 
 
 // Get a sorted list of hub names. Should be freed with g_strfreev()
-char **db_vars_hubs() {
+char **db_vars_hubs(void) {
   db_vars_cacheget();
 
   GPtrArray *p = g_ptr_array_new();
@@ -1177,7 +1177,7 @@ static db_user_t *db_users_alloc(guint64 hub, guint64 uid, int flags, const char
   return u;
 }
 
-static void db_users_cacheget() {
+static void db_users_cacheget(void) {
   if(db_users_cache)
     return;
 
@@ -1256,7 +1256,7 @@ void db_users_rmhub(guint64 hub) {
 
 // Get an ordered list (username, hubid) of users. The array must be g_free()'d
 // after use, but the elements shouldn't.
-db_user_t **db_users_list() {
+db_user_t **db_users_list(void) {
   db_users_cacheget();
 
   db_user_t **list = g_new(db_user_t *, g_hash_table_size(db_users_cache)+1);
@@ -1387,7 +1387,7 @@ static const char *cert_load(const char *cert_file, const char *key_file, gnutls
 }
 
 
-static void cert_init() {
+static void cert_init(void) {
   char *cert_file = g_build_filename(db_dir, "cert", "client.crt", NULL);
   char *key_file = g_build_filename(db_dir, "cert", "client.key", NULL);
 
@@ -1438,7 +1438,7 @@ static void cert_init() {
 
 // Checks or creates the initial session directory, including subdirectories
 // and the version/lock file. Returns the database version. (major<<8 + minor)
-static int db_dir_init() {
+static int db_dir_init(void) {
   // Get location of the session directory. It may already have been set in main.c
   if(!db_dir && (db_dir = g_getenv("NCDC_DIR")))
     db_dir = g_strdup(db_dir);
@@ -1509,7 +1509,7 @@ static int db_dir_init() {
   ")"
 
 
-static void db_init_schema() {
+static void db_init_schema(void) {
   // Get user_version
   GAsyncQueue *a = g_async_queue_new_full(g_free);
   db_queue_push(DBF_SINGLE|DBF_NOCACHE, "PRAGMA user_version", DBQ_RES, a, DBQ_INT, DBQ_END);
@@ -1597,7 +1597,7 @@ static void db_init_schema() {
 }
 
 
-void db_init() {
+void db_init(void) {
   int ver = db_dir_init();
 
   if(ver>>8 < 2)
@@ -1619,6 +1619,6 @@ void db_init() {
 
 
 // Executes a VACUUM
-void db_vacuum() {
+void db_vacuum(void) {
   db_queue_push(DBF_SINGLE|DBF_NOCACHE, "VACUUM", DBQ_END);
 }

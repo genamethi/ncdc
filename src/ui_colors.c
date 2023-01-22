@@ -182,7 +182,7 @@ char *ui_color_str_gen(int fd, int bg, int x) {
 
 
 // TODO: re-use color pairs when we have too many (>64) color groups
-void ui_colors_update() {
+void ui_colors_update(void) {
   int pair = 0;
   ui_color_t *c = ui_colors;
   for(; c->var>=0; c++) {
@@ -193,7 +193,7 @@ void ui_colors_update() {
 }
 
 
-void ui_colors_init() {
+void ui_colors_init(void) {
   if(!has_colors())
     return;
 

@@ -35,7 +35,7 @@ gboolean geoip_available = FALSE;
 
 static MMDB_s *db;
 
-void geoip_reinit() {
+void geoip_reinit(void) {
   if(db) {
     MMDB_close(db);
     free(db);
@@ -90,7 +90,7 @@ const char *geoip_country(const struct sockaddr *const ip) {
 
 #else /* No GEOIP */
 
-void geoip_reinit() {}
+void geoip_reinit(void) {}
 const char *geoip_country(const struct sockaddr *const ip) { return NULL; }
 
 #endif

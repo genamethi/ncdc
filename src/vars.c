@@ -367,7 +367,7 @@ static gboolean s_nick(guint64 hub, const char *key, const char *val, GError **e
   return TRUE;
 }
 
-static char *i_nick() {
+static char *i_nick(void) {
   // make sure a nick is set
   if(!db_vars_get(0, "nick")) {
     char *nick = g_strdup_printf("ncdc_%d", g_random_int_range(1, 9999));
@@ -380,7 +380,7 @@ static char *i_nick() {
 
 // cid / pid
 
-static char *i_cid_pid() {
+static char *i_cid_pid(void) {
   if(db_vars_get(0, "cid") && db_vars_get(0, "pid"))
     return NULL;
 
@@ -602,7 +602,7 @@ static gboolean s_ffc(guint64 hub, const char *key, const char *val, GError **er
 #endif
 }
 
-static char *i_ffc() {
+static char *i_ffc(void) {
   char *r = g_ffc(0, "flush_file_cache");
   var_ffc_set(int_raw(r));
   return G_STRINGIFY(VAR_FFC_NONE);
@@ -669,7 +669,7 @@ static gboolean s_log_debug(guint64 hub, const char *key, const char *val, GErro
   return TRUE;
 }
 
-static char *i_log_debug() {
+static char *i_log_debug(void) {
   char *r = db_vars_get(0, "log_debug");
   var_log_debug = bool_raw(r);
   return "false";
@@ -1125,7 +1125,7 @@ struct in6_addr var_parse_ip6(char *r) {
 
 // Initialization
 
-void vars_init() {
+void vars_init(void) {
   // Set correct default value
   int var_num = 0;
 #define V(n, gl, h, f, p, su, g, s, d)\

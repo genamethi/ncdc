@@ -494,7 +494,7 @@ hub_t *hub_global_byid(guint64 id) {
 
 
 // Should be called when something changes that may affect our INF or $MyINFO.
-void hub_global_nfochange() {
+void hub_global_nfochange(void) {
   GHashTableIter i;
   g_hash_table_iter_init(&i, hubs);
   hub_t *h;

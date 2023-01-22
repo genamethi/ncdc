@@ -1518,7 +1518,7 @@ void net_udp_sendf(net_udp_t *udp, const char *fmt, ...) {
 
 // initialize some global structures
 
-void net_init_global() {
+void net_init_global(void) {
   ratecalc_init(&net_in);
   ratecalc_init(&net_out);
   // Don't group these with RCC_UP or RCC_DOWN, otherwise bandwidth will be counted twice.

@@ -395,7 +395,7 @@ static void c_accept(char *args) {
 }
 
 
-static void c_open_list() {
+static void c_open_list(void) {
   char **hubs = db_vars_hubs();
   if(!*hubs) {
     ui_m(NULL, 0, "No hubs found in the configuration data.");
@@ -499,7 +499,7 @@ static void c_userlist(char *args) {
 }
 
 
-static void listshares() {
+static void listshares(void) {
   db_share_item_t *l = db_share_list();
   if(!l->name)
     ui_m(NULL, 0, "Nothing shared.");
@@ -736,7 +736,7 @@ static void c_whois(char *args) {
 }
 
 
-static void listgrants() {
+static void listgrants(void) {
   db_user_t **list = db_users_list();
   int n = 0;
   db_user_t **i = list;

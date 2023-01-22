@@ -102,7 +102,7 @@ static int ui_cmdhist_search(gboolean backward, const char *q, int start) {
 }
 
 
-static void ui_cmdhist_save() {
+static void ui_cmdhist_save(void) {
   if(!cmdhist->ismod)
     return;
   cmdhist->ismod = FALSE;
@@ -126,7 +126,7 @@ static void ui_cmdhist_save() {
 }
 
 
-void ui_cmdhist_close() {
+void ui_cmdhist_close(void) {
   int i;
   ui_cmdhist_save();
   for(i=0; i<=CMDHIST_BUF; i++)

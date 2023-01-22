@@ -490,7 +490,7 @@ static gboolean dl_queue_start_do(gpointer dat) {
 // from a timer.
 // TODO: Make the timeout configurable? It's a tradeoff between download
 // management responsiveness and CPU usage.
-void dl_queue_start() {
+void dl_queue_start(void) {
   if(!dl_queue_needstart) {
     dl_queue_needstart = TRUE;
     g_timeout_add(500, dl_queue_start_do, NULL);
@@ -952,7 +952,7 @@ void dl_load_dlu(const char *tth, guint64 uid, char error, const char *error_msg
 }
 
 
-void dl_init_global() {
+void dl_init_global(void) {
   queue_users = g_hash_table_new(g_int64_hash, g_int64_equal);
   dl_queue = g_hash_table_new(g_int_hash, tiger_hash_equal);
   // load stuff from the database
@@ -969,7 +969,7 @@ void dl_init_global() {
 }
 
 
-void dl_close_global() {
+void dl_close_global(void) {
   // Delete incomplete file lists. They won't be completed anyway.
   GHashTableIter iter;
   dl_t *dl;
@@ -1015,7 +1015,7 @@ gboolean dl_fl_clean(gpointer dat) {
 
 
 // Removes unused files in <incoming_dir>.
-void dl_inc_clean() {
+void dl_inc_clean(void) {
   char *dir = var_get(0, VAR_incoming_dir);
   GDir *d = g_dir_open(dir, 0, NULL);
   if(!d)

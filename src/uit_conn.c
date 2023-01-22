@@ -73,7 +73,7 @@ static gboolean skip_func(ui_listing_t *ul, GSequenceIter *iter, void *dat) {
 }
 
 
-ui_tab_t *uit_conn_create() {
+ui_tab_t *uit_conn_create(void) {
   g_return_val_if_fail(!conntab, NULL);
 
   tab_t *t = conntab = g_new0(tab_t, 1);
@@ -97,7 +97,7 @@ static void t_close(ui_tab_t *tab) {
 }
 
 
-static char *t_title() {
+static char *t_title(void) {
   return g_strdup("Connection list");
 }
 

@@ -35,7 +35,7 @@
 #include "../src/doc.h"
 
 
-static void gen_cmd() {
+static void gen_cmd(void) {
   const doc_cmd_t *c = doc_cmds;
   printf("=over\n\n");
   for(; *c->name; c++) {
@@ -50,7 +50,7 @@ static void gen_cmd() {
 }
 
 
-static void gen_set() {
+static void gen_set(void) {
   const doc_set_t *s = doc_sets;
   printf("=over\n\n");
   for(; s->name; s++) {
@@ -62,7 +62,7 @@ static void gen_set() {
 }
 
 
-static void gen_key() {
+static void gen_key(void) {
   const doc_key_t *k = doc_keys;
   printf("=over\n\n");
   for(; k->sect; k++) {
