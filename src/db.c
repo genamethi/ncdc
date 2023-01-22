@@ -1418,8 +1418,8 @@ static void cert_init() {
   gnutls_certificate_set_x509_key(db_certificate, &cert, 1, key);
 
   // Generate keyprint
-  size_t len = 8*1024; // should be enough
-  unsigned char crtder[len];
+  unsigned char crtder[8*1024]; // should be enough
+  size_t len = sizeof crtder;
   char raw[32];
   g_assert(gnutls_x509_crt_export(cert, GNUTLS_X509_FMT_DER, (void *)crtder, &len) == 0);
   gnutls_datum_t dat;

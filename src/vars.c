@@ -457,14 +457,12 @@ static gboolean s_dl_inc_dir(guint64 hub, const char *key, const char *val, GErr
     return FALSE;
   }
 
-  char *tmp = val ? g_strdup(val) : i_dl_inc_dir(dl);
-  char nval[strlen(tmp)+1];
-  strcpy(nval, tmp);
-  g_free(tmp);
+  char *nval = val ? g_strdup(val) : i_dl_inc_dir(dl);
 
   // make sure it exists
   if(g_mkdir_with_parents(nval, 0777)) {
     g_set_error(err, 1, 0, "Error creating the directory: %s", g_strerror(errno));
+    g_free(nval);
     return FALSE;
   }
 
@@ -474,6 +472,7 @@ static gboolean s_dl_inc_dir(guint64 hub, const char *key, const char *val, GErr
   if(stat(bd, &b) == 0) {
     if(stat(nval, &a) < 0) {
       g_set_error(err, 1, 0, "Error stat'ing %s: %s", nval, g_strerror(errno));
+      g_free(nval);
       return FALSE;
     }
     if(a.st_dev != b.st_dev)
@@ -482,6 +481,7 @@ static gboolean s_dl_inc_dir(guint64 hub, const char *key, const char *val, GErr
   }
 
   db_vars_set(hub, key, val);
+  g_free(nval);
   return TRUE;
 }
 

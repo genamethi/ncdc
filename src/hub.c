@@ -1028,7 +1028,7 @@ static void adc_sch(hub_t *hub, adc_cmd_t *cmd) {
 
   int i = 0;
   int max = (u->hasudp4 && u->udp4) || (u->hasudp6 && u->udp6) ? 10 : 5;
-  fl_list_t *res[max];
+  fl_list_t *res[10];
 
   // TTH lookup
   if(tr) {

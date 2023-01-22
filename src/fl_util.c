@@ -423,7 +423,7 @@ int fl_search_rec(fl_list_t *parent, fl_search_t *s, fl_list_t **res, int max) {
   // weed out stuff from 'and' if it's already matched in parent (I'm assuming
   // that stuff matching the parent of parent has already been removed)
   GRegex **o = s->and;
-  GRegex *nand[fl_search_and_len(o)+1];
+  GRegex **nand = g_malloc(sizeof(GRegex *) * (fl_search_and_len(o)+1));
   int i = 0;
   for(; o&&*o; o++)
     if(G_LIKELY(!parent->parent || !g_regex_match(*o, parent->name, 0, NULL)))
@@ -441,6 +441,7 @@ int fl_search_rec(fl_list_t *parent, fl_search_t *s, fl_list_t **res, int max) {
       n += fl_search_rec(f, s, res+n, max-n);
   }
   s->and = o;
+  g_free(nand);
   return n;
 }
 
@@ -450,24 +451,21 @@ gboolean fl_search_match_full(fl_list_t *fl, fl_search_t *s) {
   // weed out stuff from 'and' if it's already matched in any of its parents.
   GRegex **oand = s->and;
   int len = fl_search_and_len(s->and);
-  GRegex *nand[len];
-  fl_list_t *p = fl->parent;
-  int i;
-  memcpy(nand, s->and, len*sizeof(GRegex *));
-  for(; p && p->parent; p=p->parent)
-    for(i=0; i<len; i++)
-      if(G_UNLIKELY(nand[i] && g_regex_match(nand[i], p->name, 0, NULL)))
-        nand[i] = NULL;
-  GRegex *and[len];
-  int j=0;
-  for(i=0; i<len; i++)
-    if(nand[i])
-      and[j++] = nand[i];
-  and[j] = NULL;
-  s->and = and;
-  // and now match
+  GRegex **nand = g_malloc(sizeof(GRegex *) * (len+1));
+  fl_list_t *p;
+  int i, j=0;
+  for(i=0; i<len; i++) {
+    for(p=fl->parent; p && p->parent; p=p->parent)
+      if(G_UNLIKELY(oand[i] && g_regex_match(oand[i], p->name, 0, NULL)))
+        break;
+    if(!(p && p->parent))
+      nand[j++] = oand[i];
+  }
+  nand[j] = NULL;
+  s->and = nand;
   gboolean r = fl_search_match(fl, s);
   s->and = oand;
+  g_free(nand);
   return r;
 }
 
