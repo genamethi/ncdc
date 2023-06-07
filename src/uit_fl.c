@@ -43,6 +43,7 @@ typedef struct tab_t {
   int order;
   gboolean reverse : 1;
   gboolean dirfirst : 1;
+  gboolean unknownfirst : 1;
   gboolean loading : 1;
   gboolean needmatch : 1;
 } tab_t;
@@ -56,6 +57,14 @@ static gint sort_func(gconstpointer a, gconstpointer b, gpointer dat) {
   const fl_list_t *la = a;
   const fl_list_t *lb = b;
   tab_t *t = dat;
+
+  if(t->unknownfirst) {
+    char *a_flag = fl_local_from_tth(la->tth);
+    char *b_flag = fl_local_from_tth(lb->tth);
+    if (!!a_flag != !!b_flag) {
+      return a_flag ? 1 : -1;
+    }
+  }
 
   // dirs before files
   if(t->dirfirst && !!la->isfile != !!lb->isfile)
@@ -259,6 +268,7 @@ ui_tab_t *uit_fl_create(guint64 uid, const char *sel) {
   t->uname = u ? g_strdup(u->name) : NULL;
   t->uid = uid;
   t->dirfirst = TRUE;
+  t->unknownfirst = FALSE;
   t->order = SORT_NAME;
   time(&t->age);
 
@@ -445,6 +455,10 @@ static void t_key(ui_tab_t *tab, guint64 key) {
     t->dirfirst = !t->dirfirst;
     sort = TRUE;
     break;
+  case INPT_CHAR('u'): // u - toggle sorting unknown files first
+    t->unknownfirst = !t->unknownfirst;
+    sort = TRUE;
+    break;
 #undef SETSORT
 
   case INPT_CHAR('d'): // d (download)
@@ -491,9 +505,10 @@ static void t_key(ui_tab_t *tab, guint64 key) {
   if(sort && t->fl) {
     g_sequence_sort(t->list->list, sort_func, t);
     ui_listing_sorted(t->list);
-    ui_mf(NULL, 0, "Ordering by %s (%s%s)",
+    ui_mf(NULL, 0, "Ordering by %s (%s%s%s)",
       t->order == SORT_NAME  ? "file name" : "file size",
-      t->reverse ? "descending" : "ascending", t->dirfirst ? ", dirs first" : "");
+      t->reverse ? "descending" : "ascending", t->dirfirst ? ", dirs first" : "",
+      t->unknownfirst ? ", unknown files first" : "");
   }
 }
 
