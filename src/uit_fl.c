@@ -59,8 +59,8 @@ static gint sort_func(gconstpointer a, gconstpointer b, gpointer dat) {
   tab_t *t = dat;
 
   if(t->unknownfirst) {
-    char *a_flag = fl_local_from_tth(la->tth);
-    char *b_flag = fl_local_from_tth(lb->tth);
+    GSList *a_flag = fl_local_from_tth(la->tth);
+    GSList *b_flag = fl_local_from_tth(lb->tth);
     if (!!a_flag != !!b_flag) {
       return a_flag ? 1 : -1;
     }
