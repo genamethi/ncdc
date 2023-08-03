@@ -151,7 +151,7 @@ static gboolean listen_tcp_handle(gpointer dat) {
 
   // handle error
   if(c < 0) {
-    if(errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+    if(errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR || errno == ECONNABORTED)
       return TRUE;
     ui_mf(uit_main_tab, 0, "TCP accept error on %s: %s. Switching to passive mode.",
       listen_bind_ipport(b), g_strerror(errno));
