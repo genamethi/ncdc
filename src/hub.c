@@ -746,7 +746,7 @@ void hub_send_nfo(hub_t *hub) {
     // send non-changing stuff in the IDENTIFY state
     gboolean f = hub->state == ADC_S_IDENTIFY;
     if(f) {
-      g_string_append_printf(cmd, " ID%s PD%s VEncdc\\s%s", var_get(0, VAR_cid), var_get(0, VAR_pid), main_version);
+      g_string_append_printf(cmd, " ID%s PD%s APncdc VE%s", var_get(0, VAR_cid), var_get(0, VAR_pid), main_version);
       adc_append(cmd, "NI", hub->nick);
       // Always add our KP field, even if we're not active. Other clients may
       // validate our certificate even when we are the one connecting.
