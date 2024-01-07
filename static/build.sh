@@ -27,16 +27,16 @@
 
 
 MUSL_CROSS_PATH=/opt/cross
-ZLIB_VERSION=1.2.12
+ZLIB_VERSION=1.3
 BZIP2_VERSION=1.0.8
-SQLITE_VERSION=3390300
-GMP_VERSION=6.2.1
-NETTLE_VERSION=3.8.1
-IDN_VERSION=2.3.3
-GNUTLS_VERSION=3.7.7
-NCURSES_VERSION=6.3
-GLIB_VERSION=2.74.0
-MAXMIND_VERSION=1.6.0
+SQLITE_VERSION=3440200
+GMP_VERSION=6.3.0
+NETTLE_VERSION=3.9.1
+IDN_VERSION=2.3.4
+GNUTLS_VERSION=3.8.2
+NCURSES_VERSION=6.4
+GLIB_VERSION=2.78.0
+MAXMIND_VERSION=1.7.1
 
 
 # We don't actually use pkg-config at all. Setting this variable to 'true'
@@ -129,7 +129,7 @@ getbzip2() {
 
 
 getsqlite() {
-  fem https://sqlite.org/2022/ sqlite-autoconf-$SQLITE_VERSION.tar.gz sqlite
+  fem https://sqlite.org/2023/ sqlite-autoconf-$SQLITE_VERSION.tar.gz sqlite
   prebuild sqlite || return
   $srcdir/configure --prefix=$PREFIX --disable-readline --disable-dynamic-extensions\
     --disable-fts4 --disable-fts5 --disable-rtree\
@@ -173,8 +173,8 @@ getgnutls() {
   prebuild gnutls || return
   $srcdir/configure --prefix=$PREFIX --disable-gtk-doc-html --disable-shared --disable-silent-rules\
     --enable-static --disable-cxx --disable-srp-authentication --disable-openssl-compatibility\
-    --disable-guile --disable-tools --with-included-libtasn1 --without-p11-kit\
-    --with-included-unistring --host=$HOST\
+    --disable-guile --disable-tools --with-included-libtasn1 --without-p11-kit --without-brotli\
+    --without-zstd --without-tpm --without-tpm2 --with-included-unistring --host=$HOST\
     CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib -Wl,--start-group -lnettle -lhogweed -lgmp -lidn2" || exit
   make || exit
   make -C gl install || exit
@@ -236,7 +236,7 @@ getncdc() {
     CPPFLAGS="-I$PREFIX/include -D_GNU_SOURCE -Wno-deprecated-declarations" LDFLAGS="-static -L$PREFIX/lib -L$PREFIX/lib64 -lz -lbz2"\
     SQLITE_LIBS=-lsqlite3 GEOIP_LIBS=-lmaxminddb GNUTLS_LIBS="-lgnutls -lz -lhogweed -lnettle -lgmp -lidn2"\
     NCURSES_CFLAGS="-I$PREFIX/include/ncursesw" NCURSES_LIBS="-lncursesw"\
-    GLIB_LIBS="-pthread -lglib-2.0 -lgthread-2.0" GLIB_CFLAGS="-I$PREFIX/include/glib-2.0 -I$PREFIX/lib/glib-2.0/include" || exit
+    GLIB_LIBS="-pthread -lglib-2.0 -lgthread-2.0 -lpcre2-8 -lintl" GLIB_CFLAGS="-I$PREFIX/include/glib-2.0 -I$PREFIX/lib/glib-2.0/include" || exit
   # Make sure that the Makefile dependencies for makeheaders and gendoc are "up-to-date"
   mkdir -p deps deps/.deps doc doc/.deps
   touch deps/.dirstamp deps/.deps/.dirstamp deps/makeheaders.o doc/.dirstamp doc/.deps/.dirstamp doc/gendoc.o 

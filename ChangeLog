@@ -1,3 +1,10 @@
+1.24 - 2024-01-07
+	- Add 'u' key to file browser to sort non-local files first
+	- Fix active mode sometimes breaking on FreeBSD
+	- Fix possible crash on aarch64 when connected to an ADC hub
+	- Slightly improve ADC protocol compliance
+	- Slightly improve C compiler compatibility
+
 1.23.1 - 2022-09-27
 	- Fix buffer overflow on connections tab for incoming IPv6 connections in handshake phase
 
