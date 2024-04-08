@@ -65,7 +65,7 @@ static void t_draw(ui_tab_t *t) {
 }
 
 
-static char *t_title(ui_tab_t *t) {
+static char *t_title(ui_tab_t *tab) {
   return g_strdup_printf("Welcome to ncdc %s!", main_version);
 }
 

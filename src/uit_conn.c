@@ -97,7 +97,7 @@ static void t_close(ui_tab_t *tab) {
 }
 
 
-static char *t_title(void) {
+static char *t_title(ui_tab_t *tab) {
   return g_strdup("Connection list");
 }
 
