@@ -1,3 +1,6 @@
+1.24.1 - 2024-07-18
+	- Fix compilation with -Wincompatible-pointer-types
+
 1.24 - 2024-01-07
 	- Add 'u' key to file browser to sort non-local files first
 	- Fix active mode sometimes breaking on FreeBSD
