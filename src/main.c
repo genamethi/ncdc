@@ -197,6 +197,10 @@ void ncdc_quit(void) {
 }
 
 
+#ifdef USE_GEOIP
+#include <maxminddb.h>
+#endif
+
 char *ncdc_version(void) {
   static GString *ver = NULL;
   static char *msg =
@@ -207,12 +211,25 @@ char *ncdc_version(void) {
 #else
      "no\n"
 #endif
+    "GeoIP support: "
+#if defined(USE_GEOIP) && defined(USE_LIBLOC)
+    "yes (libmaxminddb & libloc)\n"
+#elif defined(USE_GEOIP)
+    "yes (libmaxminddb)\n"
+#elif defined(USE_LIBLOC)
+    "yes (libloc)\n"
+#else
+    "no\n"
+#endif
     "Libraries:\n"
     "  GLib %d.%d.%d (%d.%d.%d)\n"
     "  GnuTLS %s (%s)\n"
     "  SQLite %s (%s)"
 #ifdef NCURSES_VERSION
     "\n  ncurses %s"
+#endif
+#ifdef USE_GEOIP
+    "\n  libmaxminddb %s"
 #endif
   ;
   if(ver)
@@ -230,6 +247,9 @@ char *ncdc_version(void) {
     SQLITE_VERSION, sqlite3_libversion()
 #ifdef NCURSES_VERSION
     , NCURSES_VERSION
+#endif
+#ifdef USE_GEOIP
+    , MMDB_lib_version()
 #endif
   );
   return ver->str;
