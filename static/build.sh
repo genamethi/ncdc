@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script assumes the following:
 # - You have the following installed on your machine:
@@ -27,16 +27,18 @@
 
 
 MUSL_CROSS_PATH=/opt/cross
-ZLIB_VERSION=1.3
+ZLIB_VERSION=1.3.1
 BZIP2_VERSION=1.0.8
-SQLITE_VERSION=3440200
+SQLITE_VERSION=3490100
 GMP_VERSION=6.3.0
-NETTLE_VERSION=3.9.1
-IDN_VERSION=2.3.4
-GNUTLS_VERSION=3.8.2
-NCURSES_VERSION=6.4
-GLIB_VERSION=2.78.0
-MAXMIND_VERSION=1.7.1
+NETTLE_VERSION=3.10.1
+IDN_VERSION=2.3.7
+# Couldn't get 3.8.9 to compile
+GNUTLS_VERSION=3.8.4
+NCURSES_VERSION=6.5
+GLIB_VERSION=2.82.5
+MAXMIND_VERSION=1.11.0
+LIBLOC_VERSION=0.9.17
 
 
 # We don't actually use pkg-config at all. Setting this variable to 'true'
@@ -129,12 +131,12 @@ getbzip2() {
 
 
 getsqlite() {
-  fem https://sqlite.org/2023/ sqlite-autoconf-$SQLITE_VERSION.tar.gz sqlite
+  fem https://sqlite.org/2025/ sqlite-autoconf-$SQLITE_VERSION.tar.gz sqlite
   prebuild sqlite || return
-  $srcdir/configure --prefix=$PREFIX --disable-readline --disable-dynamic-extensions\
-    --disable-fts4 --disable-fts5 --disable-rtree\
+  $srcdir/configure --prefix=$PREFIX --disable-readline\
+    --disable-json --disable-math --disable-load-extension\
     --disable-shared --enable-static --host=$HOST || exit
-  make install-includeHEADERS install-libLTLIBRARIES || exit
+  make install-lib install-headers || exit
   postbuild
 }
 
@@ -172,7 +174,7 @@ getgnutls() {
   fem https://www.gnupg.org/ftp/gcrypt/gnutls/v${GNUTLS_VERSION%.*}/ gnutls-$GNUTLS_VERSION.tar.xz gnutls
   prebuild gnutls || return
   $srcdir/configure --prefix=$PREFIX --disable-gtk-doc-html --disable-shared --disable-silent-rules\
-    --enable-static --disable-cxx --disable-srp-authentication --disable-openssl-compatibility\
+    --enable-static --disable-cxx --disable-nls --disable-srp-authentication --disable-openssl-compatibility\
     --disable-guile --disable-tools --with-included-libtasn1 --without-p11-kit --without-brotli\
     --without-zstd --without-tpm --without-tpm2 --with-included-unistring --host=$HOST\
     CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib -Wl,--start-group -lnettle -lhogweed -lgmp -lidn2" || exit
@@ -204,9 +206,9 @@ getglib() {
   prebuild glib || return
 
   # Get rid of GObject & GIO stuff from the meson build, ncdc doesn't need it.
-  mv $srcdir/meson.build $srcdir/meson.build.orig
-  grep -vE "subdir\('(gio|gobject|gmodule|fuzzing|tests)'\)" $srcdir/meson.build.orig\
-      | grep -vE '^(gobject|gmodule|gio)inc = '\
+  mv -n $srcdir/meson.build $srcdir/meson.build.orig
+  grep -vE "subdir\('(gio|gobject|gmodule|girepository|fuzzing|tests)'\)" $srcdir/meson.build.orig\
+      | grep -vE '^(gobject|gmodule|gio|girepo)inc = '\
       | sed -E "s/.+GLIB_LOCALE_DIR.+/glib_conf.set_quoted('GLIB_LOCALE_DIR', '\\/usr\\/share\\/locale')/"\
       > $srcdir/meson.build
 
@@ -228,13 +230,28 @@ getmaxmind() {
   postbuild
 }
 
+getlibloc() {
+  fem https://source.ipfire.org/releases/libloc/ libloc-${LIBLOC_VERSION}.tar.gz libloc
+  prebuild libloc || return
+  cp -Rp $srcdir/* .
+  # Patch out OpenSSL use, we don't need that
+  sed -i -E 's/^AC_CHECK_LIB\(crypto.+//' configure.ac
+  sed -i -e '/^LOC_EXPORT int loc_database_verify/ {:r;/\n}/!{N;br}; s/\n.*\n/\nreturn 0;\n/}' -e 's/#include <openssl.*//' src/database.c
+  ( echo "#include <endian.h>"; cat $srcdir/src/country.c ) >src/country.c
+  echo >src/writer.c
+  sh autogen.sh || exit
+  ./configure --prefix=$PREFIX --host=$HOST --disable-shared --without-systemd --disable-man-pages --disable-nls --disable-perl || exit
+  make install-libLTLIBRARIES install-pkgincludeHEADERS || exit
+  postbuild
+}
+
 
 getncdc() {
   prebuild ncdc || return
   srcdir=../../..
-  $srcdir/configure --host=$HOST --disable-silent-rules --with-geoip\
+  $srcdir/configure --host=$HOST --disable-silent-rules --with-geoip --with-libloc\
     CPPFLAGS="-I$PREFIX/include -D_GNU_SOURCE -Wno-deprecated-declarations" LDFLAGS="-static -L$PREFIX/lib -L$PREFIX/lib64 -lz -lbz2"\
-    SQLITE_LIBS=-lsqlite3 GEOIP_LIBS=-lmaxminddb GNUTLS_LIBS="-lgnutls -lz -lhogweed -lnettle -lgmp -lidn2"\
+    SQLITE_LIBS=-lsqlite3 GEOIP_LIBS=-lmaxminddb LIBLOC_LIBS=-lloc GNUTLS_LIBS="-lgnutls -lz -lhogweed -lnettle -lgmp -lidn2"\
     NCURSES_CFLAGS="-I$PREFIX/include/ncursesw" NCURSES_LIBS="-lncursesw"\
     GLIB_LIBS="-pthread -lglib-2.0 -lgthread-2.0 -lpcre2-8 -lintl" GLIB_CFLAGS="-I$PREFIX/include/glib-2.0 -I$PREFIX/lib/glib-2.0/include" || exit
   # Make sure that the Makefile dependencies for makeheaders and gendoc are "up-to-date"
@@ -265,6 +282,7 @@ allncdc() {
   getncurses
   getglib
   getmaxmind
+  getlibloc
   getncdc
 }
 

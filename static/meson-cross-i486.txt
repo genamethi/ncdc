@@ -3,7 +3,7 @@ c = 'i486-linux-musl-gcc'
 cpp = 'i486-linux-musl-g++'
 ar = 'i486-linux-musl-ar'
 strip = 'i486-linux-musl-strip'
-pkgconfig = 'true'
+pkg-config = 'true'
 
 [host_machine]
 system = 'linux'
