@@ -124,13 +124,22 @@ PKG_CHECK_EXISTS([sqlite3],[
 PKG_CHECK_MODULES([GLIB],   [glib-2.0 >= 2.32 gthread-2.0])
 PKG_CHECK_MODULES([GNUTLS], [gnutls >= 3.0])
 AC_ARG_WITH([geoip],
-            [AS_HELP_STRING([--with-geoip], [support for IP-to-country lookups @<:@default=no@:>@])],
+            [AS_HELP_STRING([--with-geoip], [support for IP-to-country lookups through libmaxminddb @<:@default=no@:>@])],
             [],
             [with_geoip=no])
 AS_IF([test "x$with_geoip" = xyes],
       [PKG_CHECK_MODULES([GEOIP],
                          [libmaxminddb >= 1.0],
                          [AC_DEFINE(USE_GEOIP, 1, [Use libmaxminddb for IP-to-country lookups])])])
+
+AC_ARG_WITH([libloc],
+            [AS_HELP_STRING([--with-libloc], [support for IP-to-country lookups through libloc @<:@default=no@:>@])],
+            [],
+            [with_libloc=no])
+AS_IF([test "x$with_libloc" = xyes],
+      [PKG_CHECK_MODULES([LIBLOC],
+                         [libloc >= 0.9],
+                         [AC_DEFINE(USE_LIBLOC, 1, [Use libloc for IP-to-country lookups])])])
 
 
 

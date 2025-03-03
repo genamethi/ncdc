@@ -170,6 +170,9 @@ static void draw_row(ui_listing_t *list, GSequenceIter *iter, int row, void *dat
   const char *cc =
     !ip4_isany(user->ip4) ? geoip_country(ip4_sockaddr(user->ip4, 0)) :
     !ip6_isany(user->ip6) ? geoip_country(ip6_sockaddr(user->ip6, 0)) : NULL;
+  if(!cc) cc =
+    !ip4_isany(user->ip4) ? loc_country(ip4_mapv6(user->ip4)) :
+    !ip6_isany(user->ip6) ? loc_country(&user->ip6) : NULL;
   DRAW_COL(row, j, t->cw_country, cc?cc:"");
   if(t->cw_user > 1)
     ui_listing_draw_match(list, iter, row, j, str_offset_from_columns(user->name, t->cw_user-1));
@@ -206,7 +209,7 @@ static void calc_widths(tab_t *t) {
   int w = wincols-6;
 
   // Country code column (fixed size)
-  t->cw_country = geoip_available ? 3 : 0;
+  t->cw_country = geoip_available || loc_available ? 3 : 0;
   w -= t->cw_country;
 
   // share has a fixed size

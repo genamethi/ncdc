@@ -622,6 +622,17 @@ static gboolean s_geoip_cc(guint64 hub, const char *key, const char *val, GError
 #endif
 }
 
+static gboolean s_location_db(guint64 hub, const char *key, const char *val, GError **err) {
+#ifdef USE_LIBLOC
+  db_vars_set(hub, key, val);
+  loc_reinit();
+  return TRUE;
+#else
+  g_set_error(err, 1, 0, "This option can't be modified: %s.", "Ncdc has not been compiled with libloc support");
+  return FALSE;
+#endif
+}
+
 
 // hubname
 
@@ -977,6 +988,7 @@ struct var_t {
   V(hubname,          0,1, f_id,           p_hubname,       su_old,        NULL,         s_hubname,       NULL)\
   V(incoming_dir,     1,0, f_id,           p_id,            su_path,       NULL,         s_dl_inc_dir,    i_dl_inc_dir(FALSE))\
   V(local_address,    1,1, f_id,           p_ip,            su_old,        NULL,         s_active_conf,   db_vars_get(0, "active_bind"))\
+  V(location_db,      1,0, f_id,           p_id,            su_path,       NULL,         s_location_db,   NULL)\
   V(log_debug,        1,0, f_bool,         p_bool,          su_bool,       NULL,         s_log_debug,     i_log_debug())\
   V(log_downloads,    1,0, f_bool,         p_bool,          su_bool,       NULL,         NULL,            "true")\
   V(log_hubchat,      1,1, f_bool,         p_bool,          su_bool,       NULL,         NULL,            "true")\

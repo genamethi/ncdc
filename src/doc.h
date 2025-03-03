@@ -447,8 +447,8 @@ static const doc_set_t doc_sets[] = {
 },
 { "geoip_cc", 0, "<path>|disabled",
   "Path to the GeoIP2 Country database file (GeoLite2-Country.mmdb), or"
-  " 'disabled' to disable GeoIP lookups. The database can be downloaded "
-  " from https://dev.maxmind.com/geoip/geoip2/geolite2/."
+  " 'disabled' to disable GeoIP lookups through maxmind. The database can"
+  " be downloaded  from https://dev.maxmind.com/geoip/geoip2/geolite2/."
 },
 { "hash_rate", 0, "<speed>",
   "Maximum file hashing speed. See the `download_rate' setting for allowed"
@@ -476,6 +476,11 @@ static const doc_set_t doc_sets[] = {
   " address. Note that, even if the hub you're on is on IPv6, ncdc may still try"
   " to connect to another client over IPv4, at which point the socket will be"
   " bound to the configured IPv4 address."
+},
+{ "location_db", 0, "<path>|disabled",
+  "Path to the IPFire location database, or 'disabled' to disable GeoIP lookups"
+  " through libloc. The database can be downloaded from"
+  " https://www.ipfire.org/location/install."
 },
 { "log_debug", 0, "<boolean>",
   "Log debug messages to stderr.log in the session directory. It is highly"

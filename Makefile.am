@@ -80,7 +80,7 @@ ncdc_SOURCES=\
 
 auto_headers=$(ncdc_SOURCES:.c=.h)
 noinst_HEADERS=src/doc.h src/ncdc.h
-ncdc_LDADD=libdeps.a -lm $(NCURSES_LIBS) $(Z_LIBS) $(BZ2_LIBS) $(GLIB_LIBS) $(GNUTLS_LIBS) $(GCRYPT_LIBS) $(SQLITE_LIBS) $(GEOIP_LIBS)
+ncdc_LDADD=libdeps.a -lm $(NCURSES_LIBS) $(Z_LIBS) $(BZ2_LIBS) $(GLIB_LIBS) $(GNUTLS_LIBS) $(GCRYPT_LIBS) $(SQLITE_LIBS) $(GEOIP_LIBS) $(LIBLOC_LIBS)
 MOSTLYCLEANFILES=$(auto_headers) src/version.h mkhdr.done
 
 

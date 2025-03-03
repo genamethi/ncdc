@@ -28,6 +28,7 @@
 #include "geoip.h"
 
 gboolean geoip_available = FALSE;
+gboolean loc_available = FALSE;
 
 #ifdef USE_GEOIP
 
@@ -92,5 +93,66 @@ const char *geoip_country(const struct sockaddr *const ip) {
 
 void geoip_reinit(void) {}
 const char *geoip_country(const struct sockaddr *const ip) { return NULL; }
+
+#endif
+
+
+
+#ifdef USE_LIBLOC
+
+#include <libloc/libloc.h>
+#include <libloc/database.h>
+#include <libloc/country.h>
+
+static struct loc_database *locdb;
+
+void loc_reinit(void) {
+  if(locdb) loc_database_unref(locdb);
+  locdb = NULL;
+  loc_available = FALSE;
+
+  const char *fn = var_get(0, VAR_location_db);
+  if(!fn || strcmp(fn, "disabled") == 0)
+    return;
+
+  struct loc_ctx *ctx = NULL;
+  if(loc_new(&ctx)) {
+    ui_mf(NULL, 0, "Error initializing libloc (%s), no country codes will be displayed.", strerror(errno));
+    return;
+  }
+
+  FILE *fh = fopen(fn, "r");
+  if(!fh) {
+    ui_mf(NULL, 0, "Error opening location database '%s' (%s), no country codes will be displayed.", fn, strerror(errno));
+    loc_unref(ctx);
+    return;
+  }
+
+  int r = loc_database_new(ctx, &locdb, fh);
+  fclose(fh);
+  loc_unref(ctx);
+  if(r) ui_mf(NULL, 0, "Error reading location database '%s' (%s), no country codes will be displayed.", fn, strerror(errno));
+  else loc_available = TRUE;
+}
+
+const char *loc_country(const struct in6_addr *ip) {
+  if(!locdb) return NULL;
+
+  struct loc_network *net = NULL;
+  if(loc_database_lookup(locdb, ip, &net)) return NULL;
+
+  static char buf[8], *ret = NULL;
+  if(net) {
+    const char *cc = loc_network_get_country_code(net);
+    if(cc && *cc) strcpy(ret = buf, cc);
+    loc_network_unref(net);
+  }
+  return ret;
+}
+
+#else /* No LIBLOC */
+
+void loc_reinit(void) {};
+const char *loc_country(const struct in6_addr *ip) { return NULL; };
 
 #endif
