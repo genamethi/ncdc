@@ -1,5 +1,5 @@
-ncdc 1.24.1
-===========
+ncdc 1.25
+=========
 
 DESCRIPTION
 
@@ -21,6 +21,7 @@ REQUIREMENTS
   glib    >= 2.32.0
   gnutls  >= 3.0
   libmaxminddb (optional)
+  libloc       (optional)
 
 
 

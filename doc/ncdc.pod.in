@@ -388,7 +388,7 @@ see the same uploaded file several times with a different file offset.
 
 =head1 LICENSE
 
-Copyright (C) Yoran Heling <projects@yorhel.nl>
+Copyright (C) Yorhel <projects@yorhel.nl>
 
 ncdc is distributed under the MIT license, please read the COPYING file for
 more information.
@@ -402,6 +402,6 @@ support and discussions.
 
 =head1 AUTHOR
 
-ncdc is written by Yoran Heling <projects@yorhel.nl>
+ncdc is written by Yorhel <projects@yorhel.nl>
 
 Web: L<https://dev.yorhel.nl/ncdc>

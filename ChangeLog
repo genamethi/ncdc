@@ -1,3 +1,8 @@
+1.25 - 2025-03-04
+	- Add support for IP to country lookups through libloc
+	- Add `location_db` config option
+	- Indicate GeoIP support in `--version`
+
 1.24.1 - 2024-07-18
 	- Fix compilation with -Wincompatible-pointer-types
 
