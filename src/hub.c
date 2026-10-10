@@ -580,7 +580,7 @@ void hub_opencc(hub_t *hub, hub_user_t *u) {
       net_writef(hub->net, c->str);
       g_string_free(c, TRUE);
     } else
-      net_writef(hub->net, net_is_ipv6(hub->net) ? "$ConnectToMe %s [%s]:%d%s" : "$ConnectToMe %s %s:%d%s|",
+      net_writef(hub->net, net_is_ipv6(hub->net) ? "$ConnectToMe %s [%s]:%d%s|" : "$ConnectToMe %s %s:%d%s|",
           u->name_hub, hub_ip(hub), port, usetls ? "S" : "");
 
   // we're passive, send RCM
