@@ -31,6 +31,5 @@ static/arm
 static/i486
 static/x86_64
 static/tarballs
-keybind.md
 libdeps.a
 makeheaders
